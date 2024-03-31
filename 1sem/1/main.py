@@ -55,7 +55,8 @@ def main():
     """)
     for image in os.scandir(input_path):
         print(f"Работаем с {image.name}.")
-        img_np = np.array(Image.open(image.path).convert('RGB'))
+        # noinspection PyTypeChecker
+        img_np = np.array(Image.open(image.path).convert('RGB'))  # а то не совсем умный пайчарм...
 
         operation: Callable[[np.ndarray], Image.Image] = {
             # K - float, M и N - int
