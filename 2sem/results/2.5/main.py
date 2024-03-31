@@ -11,6 +11,11 @@ BLACK = 0
 WHITE = 255
 
 
+def semitone(img):
+    # another variant of semitone....
+    return (0.3 * img[:, :, 0] + 0.59 * img[:, :, 1] + 0.11 * img[:, :, 2]).astype(np.uint8)
+
+
 def otsu_local_treshold(window):
     # CHECK PRESENTATION TO UNDERSTAND WHAT HAPPENED, U WROTE IT WHILE GETTING HIGH, U CAN`T REMEMBER
     bins = np.arange(np.min(window) - 1, np.max(window) + 1)
@@ -69,7 +74,7 @@ def get_big_window(image_arr, w, h):
 
 
 def Eikvel_binarization(image, min_diff):
-    image_arr = np.mean(np.array(image), axis=2).astype(np.uint8)  # semitone из 1 части лабы
+    image_arr = semitone(np.array(image))  # semitone из 1 части лабы
     new_image_arr = np.zeros(shape=image_arr.shape)
     np.full((2, 2), WHITE).astype(np.uint8)
     for h in tqdm(range(0, image_arr.shape[0], SMALL_WINDOW_SIZE)):
