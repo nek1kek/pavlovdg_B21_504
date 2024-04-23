@@ -37,7 +37,7 @@ def generate_letters(sin_letters):
         width, height = font.getsize(letter)
         img = Image.new(mode="RGB", size=(ceil(width), ceil(height)), color="white")
         draw = ImageDraw.Draw(img)
-        draw.text((0, 0), letter, (0, 0, 0), font=font)
+        draw.text((0, 0), letter, "black", font=font)
 
         img = Image.fromarray(_simple_binarization(np.array(img), THRESHOLD), 'L')
         img.save(f"output/letters/{i + 1}.png")
