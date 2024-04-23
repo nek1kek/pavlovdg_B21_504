@@ -7,6 +7,7 @@ PHRASE = "سوسک ها می توانند تا چند هفته بدون سر ز�
 WHITE = 255
 
 FONT = ImageFont.truetype("input/Unicode.ttf", 52)
+THRESHOLD = 75
 
 
 def create_phrase_profiles(img: np.array):
@@ -31,8 +32,16 @@ def create_phrase_profiles(img: np.array):
     plt.clf()
 
 
+def _simple_binarization(img, threshold=THRESHOLD):
+    new_image = np.zeros(shape=img.shape)
+    new_image[img > threshold] = WHITE
+    return new_image.astype(np.uint8)
+
+
 def generate_phrase_image():
-    phrase_width = sum(FONT.getsize(char)[0] for char in PHRASE)
+    space_len = 5
+    phrase_width = sum(FONT.getsize(char)[0] for char in PHRASE) + space_len * (len(PHRASE) - 1)
+
     height = max(FONT.getsize(char)[1] for char in PHRASE)
 
     img = Image.new("L", (phrase_width, height), color="white")
@@ -42,9 +51,11 @@ def generate_phrase_image():
     for letter in PHRASE:
         width, letter_height = FONT.getsize(letter)
         draw.text((current_x, height - letter_height), letter, "black", font=FONT)
-        current_x += width
+        current_x += width + space_len
 
+    img = Image.fromarray(_simple_binarization(np.array(img)))
     img.save("output/original_phrase.bmp")
+
     np_img = np.array(img)
     create_phrase_profiles(np_img)
     ImageOps.invert(img).save("output/inverted_phrase.bmp")

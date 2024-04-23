@@ -18,7 +18,7 @@ TTF_FILE = "input/Unicode.ttf"
 WHITE = 255
 
 
-def _simple_binarization(img, threshold):
+def _simple_binarization(img, threshold=THRESHOLD):
     semitoned = (0.3 * img[:, :, 0] + 0.59 * img[:, :, 1] + 0.11 * img[:, :, 2]).astype(np.uint8)
     new_image = np.zeros(shape=semitoned.shape)
     new_image[semitoned > threshold] = WHITE
@@ -50,6 +50,7 @@ def calculate_features(img):
     img_b[img != WHITE] = 1  # Assuming white pixel value is 255
 
     # Calculate quadrant weights and relative weights
+
     (h, w) = img_b.shape
     h_half, w_half = h // 2, w // 2
     quadrants = {
@@ -78,6 +79,7 @@ def calculate_features(img):
     normalized_inertia_y = inertia_y / w ** 2
 
     return {
+        'weight': total_pixels,
         'weights': weights,
         'rel_weights': rel_weights,
         'center_of_mass': center_of_mass,
@@ -89,7 +91,7 @@ def calculate_features(img):
 
 def create_features(sin_letters):
     with open('output/data.csv', 'w', newline='', encoding='utf-8') as csvfile:
-        fieldnames = ['weights', 'rel_weights', 'center_of_mass', 'normalized_center_of_mass',
+        fieldnames = ['weight', 'weights', 'rel_weights', 'center_of_mass', 'normalized_center_of_mass',
                       'inertia', 'normalized_inertia']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
